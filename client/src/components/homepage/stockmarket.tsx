@@ -17,11 +17,12 @@ export default function StockMarket() {
 	const [search, setSearch] = useState("");
 	const [isLoading, setIsLoading] = useState(true);
 	const [error, setError] = useState("");
-	const q = useDebounce(search, 1000);
+	let q = useDebounce(search, 1000);
 
 	const reset = () => {
 		setSearch("");
 		setCategory("");
+		q = "";
 	};
 
 	useEffect(() => {
