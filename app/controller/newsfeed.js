@@ -9,7 +9,7 @@ const cache = new NodeCache({ stdTTL: 3600 });
 const adminretrievenewsfeedController = async (req, res, next) => {
   // Destructure query parameters from the request
   const { country, category, sources, q, language } = req.query;
-console.log('pol')
+console.log('poli')
   // Validate request: Ensure at least one query parameter is provided
   if (!country && !category && !sources && !q && !language) {
     return res.status(400).json({
