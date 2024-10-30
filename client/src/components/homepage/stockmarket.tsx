@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react";
-import categories from "../../data/categories";
+import { toast } from "react-toastify";
 
+import categories from "../../data/categories";
 import { fetchNewsItems } from "../../libs/axios";
 import useDebounce from "../../hooks/useDebounce";
 import formatDate from "../../utils/formatDate";
+
 import Loading from "../Loading";
 import NoData from "../NoData";
+import Error from "../Error";
 
 export default function StockMarket() {
 	const [articles, setArticles] = useState([] as { author: string; content: string; title: string; date: Date; image: string; url: string }[]);
@@ -13,20 +16,26 @@ export default function StockMarket() {
 	const [language] = useState("en");
 	const [search, setSearch] = useState("");
 	const [isLoading, setIsLoading] = useState(true);
-	const q = useDebounce(search, 1000);
+	const [error, setError] = useState("");
+	let q = useDebounce(search, 1000);
 
 	const reset = () => {
 		setSearch("");
 		setCategory("");
+		q = "";
 	};
 
 	useEffect(() => {
 		(async () => {
 			setIsLoading(true);
+			setError("");
 			const data = await fetchNewsItems({ category, language, q });
 			setIsLoading(false);
 
-			if (data.error) return;
+			if (data.error) {
+				setError(data.error);
+				return toast.error(data.error);
+			}
 			setArticles(data.articles);
 		})();
 	}, [category, language, q]);
@@ -57,28 +66,34 @@ export default function StockMarket() {
 
 			{!isLoading && (
 				<>
-					{articles.length > 0 && (
-						<div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-							{articles.map((article, index: number) => (
-								<article key={index} className="flex flex-col">
-									<a href={article.url} target="_blank" className="mb-4 aspect-[4/3] overflow-hidden ">
-										<img src={article.image} alt="" className="h-full w-full object-cover transition-transform duration-300 hover:scale-105" />
-									</a>
-									<div className="flex flex-col flex-grow">
-										<h3 className="hover:text-primary line-clamp-2">{article.title}</h3>
+					{!error && (
+						<>
+							{articles.length > 0 && (
+								<div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+									{articles.map((article, index: number) => (
+										<article key={index} className="flex flex-col">
+											<a href={article.url} target="_blank" className="mb-4 aspect-[4/3] overflow-hidden ">
+												<img src={article.image} alt="" className="h-full w-full object-cover transition-transform duration-300 hover:scale-105" />
+											</a>
+											<div className="flex flex-col flex-grow">
+												<h3 className="hover:text-primary line-clamp-2 font-bold text-xl">{article.title}</h3>
 
-										<div className="mb-3 flex items-center gap-2 text-sm text-muted-foreground">
-											<span>{article.author}</span>
-											<span>•</span>
-											<span>{formatDate(article.date)}</span>
-										</div>
-										<p className="text-muted-foreground line-clamp-3">{article.content}</p>
-									</div>
-								</article>
-							))}
-						</div>
+												<div className="mb-3 flex items-center gap-2 text-sm text-muted-foreground">
+													<span>{article.author}</span>
+													<span>•</span>
+													<span>{formatDate(article.date)}</span>
+												</div>
+												<p className="text-muted-foreground line-clamp-3">{article.content}</p>
+											</div>
+										</article>
+									))}
+								</div>
+							)}
+							{articles.length == 0 && <NoData reset={reset} />}
+						</>
 					)}
-					{articles.length == 0 && <NoData reset={reset} />}
+
+					{error && <Error reset={reset} />}
 				</>
 			)}
 
