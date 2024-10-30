@@ -7,7 +7,6 @@ const Homepage = () => {
 			<Header />
 			<Hero />
 
-			<div className="w-full bg-[red] h-48"></div>
 			<StockMarket />
 		</div>
 	);
