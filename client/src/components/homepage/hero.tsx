@@ -16,7 +16,7 @@ export default function Hero() {
 							<div className="flex items-center gap-2 text-sm">
 								<span>{articles[0].author}</span>
 								<span>•</span>
-								<span>{articles[0].date}</span>
+								<span>{formatDate(articles[0].date)}</span>
 							</div>
 						</div>
 					</div>

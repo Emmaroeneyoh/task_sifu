@@ -75,7 +75,7 @@ export default function StockMarket() {
 												<img src={article.image} alt="" className="h-full w-full object-cover transition-transform duration-300 hover:scale-105" />
 											</a>
 											<div className="flex flex-col flex-grow">
-												<h3 className="hover:text-primary line-clamp-2">{article.title}</h3>
+												<h3 className="hover:text-primary line-clamp-2 font-bold text-xl">{article.title}</h3>
 
 												<div className="mb-3 flex items-center gap-2 text-sm text-muted-foreground">
 													<span>{article.author}</span>
